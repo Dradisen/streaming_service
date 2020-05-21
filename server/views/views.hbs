@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/video/dist/video-js.min.css">
+    <title>Stream</title>
+</head>
+<body>
+    <h1>STREAM</h1>
+
+    <video
+    id="my-player"
+    class="video-js"
+    controls
+    preload="auto"
+    autoplay="true"
+    poster="/thumbnails/test.png"
+    data-setup='{}'>
+  <source src="http://127.0.0.1:8888/live/test/index.m3u8" type="application/x-mpegURL"></source>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a
+    web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">
+      supports HTML5 video
+    </a>
+  </p>
+</video>
+    <script src="/video/dist/video.js"></script>
+    <script>videojs.options.flash.swf = "video-js.swf";</script>
+</body>
+</html>

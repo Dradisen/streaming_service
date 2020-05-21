@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+  <link rel="stylesheet" href="/video/dist/video-js.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Сервис потокового вещания</title>
+</head>
+<body>
+    <div id="app">
+      <nav class="nav-bar">
+        <ul class="nav-bar__items">
+          <li class="nav-bar__item"><a href="/">В начало</a></li>
+          <li class="nav-bar__item"><a href="/streams">Трансляции</a></li>
+          <li class="nav-bar__item">Пользователи</li>
+        </ul>
+        <ul class="nav-bar__items">
+           {{#if user}} 
+          <li class="nav-bar__item"><a>{{user.name}}</a></li> 
+          <li class="nav-bar__item"><a href="/setting/{{user.name}}">Настройки</a></li>
+          <li class="nav-bar__item"><a href="/auth/logout">Выйти</a></li> 
+           {{else}}
+          <li class="nav-bar__item"><a href="/auth/register">Регистрация</a></li>
+          <li class="nav-bar__item"><a href="/auth/login">Войти</a></li>
+          {{/if}}
+        </ul>
+      </nav>    
+      <section class="content">{{{body}}}</section>
+    </div>
+    <script src="/axios/dist/axios.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+let NodeMediaServer = require('node-media-server');
+let mongoose = require('mongoose');
+let fs = require('fs');
+let spawn = require('child_process').spawn;
+let ffmpeg = require('./config/default').rtmp_server.trans.ffmpeg;
+let config = require('./config/default').rtmp_server;
+let User = require('./database/Schema').User;
+let Streams = require('./database/Schema').Streams;
+
+let nms = new NodeMediaServer(config);
+
+nms.on('prePublish', (id, StreamPath, args) => {
+    console.log('[NodeEvent on prePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+    let key = StreamPath.split('/');
+    let id_key = key[key.length - 1];
+    
+    User.findOne({"keygen_translation": id_key}, function(err, user){ 
+        if(err){
+            console.log(err);
+        }else if(user){
+
+            User.findOne({"keygen_translation": id_key}, (err, res) => {
+                let stream = new Streams({
+                    "_id_user": res._id,
+                    "messages": [{"name": "GGGG"}]
+                })          
+                stream.save()
+            })
+
+            User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": true}}, function(err, up){
+    
+            });
+            
+            fs.access('./static/thumbnails/'+user.name, (err) => {
+                if(err){
+                    fs.mkdir('./static/thumbnails/'+user.name, (err) => {
+                        create_thumbnails(id_key, user.name);
+                    })
+                }else{
+                    create_thumbnails(id_key, user.name);
+                }
+            })
+        }else{
+            console.log('user not find');
+            let session = nms.getSession(id);
+            session.reject();
+        }
+    })
+    
+  });
+
+nms.on('donePublish', (id, StreamPath, args) => {
+    console.log('donePlay');
+    let key = StreamPath.split('/');
+    let id_key = key[key.length - 1];
+    User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": false}}, function(err, up){
+        console.log(err, up);
+    });
+
+    User.findOne({"keygen_translation": id_key}, function(err, user){ 
+        console.log(user);
+    })
+})
+
+function create_thumbnails(id_key, name){
+    spawn(ffmpeg, 
+        ['-y',
+        '-i', 'http://127.0.0.1:8888/live/'+id_key+'/index.m3u8',
+        '-ss', '00:00:01',
+        '-vframes', '1',
+        '-vf', 'scale=-2:300',
+        'static/thumbnails/'+name+'/'+name+'.png',
+    ])
+    return;
+}
+module.exports = nms;

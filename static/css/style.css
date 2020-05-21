@@ -1,0 +1,147 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.nav-bar{
+    background: #212126;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-bar a{
+    color: white;
+    text-decoration: none;
+}
+html, body, #app{
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.nav-bar__items{
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    color: white;
+    align-items: center;
+    width: auto;
+}
+
+.nav-bar__item:nth-child(1){
+    margin-left: 50px;
+}
+.nav-bar__item:last-child{
+    margin-right: 50px;
+}
+.nav-bar__item{
+    margin: 0 10px;
+}
+
+
+.aside-bar{
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    width: 300px;
+    background: #424246;
+}
+
+.content{
+    width: 100%;
+    margin: 0 auto;
+}
+
+.preview__wrapper{
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: black;
+    position: fixed;
+}
+
+.preview__videos{
+    position: relative;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100vw;
+}
+
+.preview__background{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0,0,0,0.8);
+}
+
+.auth__wrapper{
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.auth__wrapper form{
+    display: flex;
+    flex-direction: column;
+}
+
+.auth__wrapper input{
+    padding: 5px;
+    margin: 5px;
+}
+
+
+.preview__welcome{
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.settings__wrapper{
+    display: flex;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.settings__block{
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background: whitesmoke;
+    margin: 15px auto;
+    max-width: 800px;
+    width: 100%;
+    border-radius: 8px;
+}
+.settings__block h1{
+    margin: 0 0 15px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid black;
+}
+
+.settings__form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.settings__form input{
+    padding: 5px;
+    margin: 10px;
+}
+
+.settings__form input[type="submit"]{
+    background: rgb(138, 206, 37);
+    border: 0;
+    padding: 10px;
+    border-radius: 8px;
+}

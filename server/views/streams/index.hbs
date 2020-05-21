@@ -1,0 +1,14 @@
+<div>
+    {{#if streaming}}
+        {{#each users}}
+            {{#if isStreaming}}
+                <p>{{name}}</p>
+                Online
+                <a href="/streams/{{name}}">ONLINE<img src="/thumbnails/{{name}}/{{name}}.png" alt="" width="400"></a>
+            {{/if}}
+        {{/each}}
+    {{else}}
+        <h1>В данный момент трансляций нет</h1>
+    {{/if}}
+</div>
+{{> socket }}

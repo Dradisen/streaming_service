@@ -1,0 +1,21 @@
+
+{{#if user.isStreaming}}
+    <video width="1200" id="my-player" class="video-js"
+        controls
+        preload="auto"
+        autoplay="true"
+        poster="/thumbnails/Offline.png"
+        data-setup='{}'>
+        <source data-res="1080" src="http://192.168.0.184:8888/live/{{user.keygen_translation}}/index.m3u8" type="application/x-mpegURL"></source>
+        <p class="vjs-no-js">Stream is not available</p>
+    </video>
+{{else}}
+    <img src="/thumbnails/Offline.png" alt="" width="500">
+{{/if}}
+<script src="/video/dist/video.js"></script>
+<script>videojs.options.flash.swf = "video-js.swf";</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+</script>
