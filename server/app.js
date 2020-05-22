@@ -70,3 +70,11 @@ server.listen(config.port, () => {
     nms.run();
 })
 
+
+io.on('connection', function(socket){
+    console.log("connection");
+    socket.on('conn', function(data){
+        console.log(data);
+    })
+})
+

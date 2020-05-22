@@ -8,6 +8,7 @@ let User = require('./database/Schema').User;
 let Streams = require('./database/Schema').Streams;
 
 let nms = new NodeMediaServer(config);
+var thumbnails_interval;
 
 nms.on('prePublish', (id, StreamPath, args) => {
     console.log('[NodeEvent on prePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
@@ -31,15 +32,17 @@ nms.on('prePublish', (id, StreamPath, args) => {
     
             });
             
-            fs.access('./static/thumbnails/'+user.name, (err) => {
-                if(err){
-                    fs.mkdir('./static/thumbnails/'+user.name, (err) => {
+            thumbnails_interval = setInterval(function(){
+                fs.access('./static/thumbnails/'+user.name, (err) => {
+                    if(err){
+                        fs.mkdir('./static/thumbnails/'+user.name, (err) => {
+                            create_thumbnails(id_key, user.name);
+                        })
+                    }else{
                         create_thumbnails(id_key, user.name);
-                    })
-                }else{
-                    create_thumbnails(id_key, user.name);
-                }
-            })
+                    }
+                })
+            }, 10000);
         }else{
             console.log('user not find');
             let session = nms.getSession(id);
@@ -60,6 +63,8 @@ nms.on('donePublish', (id, StreamPath, args) => {
     User.findOne({"keygen_translation": id_key}, function(err, user){ 
         console.log(user);
     })
+
+    clearInterval(thumbnails_interval);
 })
 
 function create_thumbnails(id_key, name){

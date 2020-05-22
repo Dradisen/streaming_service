@@ -1,14 +1,22 @@
-<div>
-    {{#if streaming}}
-        {{#each users}}
-            {{#if isStreaming}}
-                <p>{{name}}</p>
-                Online
-                <a href="/streams/{{name}}">ONLINE<img src="/thumbnails/{{name}}/{{name}}.png" alt="" width="400"></a>
-            {{/if}}
-        {{/each}}
-    {{else}}
-        <h1>В данный момент трансляций нет</h1>
-    {{/if}}
+<div class="streams__wrapper">
+
+    <div class="streams__items">
+        {{#if streaming}}
+
+            {{#each users}}
+                <div class="streams__item">
+                    {{#if isStreaming}}
+                        <p class="streams__name">{{name}}</p>
+                        <a class="streams__link" href="/streams/{{name}}">
+                            <img class="streams__img" src="/thumbnails/{{name}}/{{name}}.png" alt="" width="400">
+                        </a>
+                        <p class="streams__live">live</p>
+                    {{/if}}
+                </div>
+            {{/each}}
+        {{else}}
+            <h1>В данный момент трансляций нет</h1>
+        {{/if}}
+    </div>
 </div>
 {{> socket }}

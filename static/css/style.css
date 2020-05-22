@@ -145,3 +145,77 @@ html, body, #app{
     padding: 10px;
     border-radius: 8px;
 }
+
+
+.streams__wrapper{
+    background: white;
+    max-width: 1230px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.streams__items{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.streams__item{
+    display: flex;
+    position: relative;
+    padding: 5px;
+    max-width: 400px;
+}
+
+.streams__name{
+    position: absolute;
+    color: white;
+    background: #72bd72;
+    padding: 5px;
+    border-radius: 10px;
+    top: 10px;
+    left: 10px;
+}
+
+.streams__img{
+    border-radius: 5px;
+    max-width: 400px;
+    height: 100%;
+    width: 100%;
+}
+
+.streams__live{
+    position: absolute;
+    color: rgb(221, 50, 50);
+    background: white;
+    border-radius: 10px;
+    font-weight: 700;
+    padding: 3px;
+    font-size: 20px;
+    border-radius: 10px;
+    bottom: 10px;
+    left: 10px;
+}
+
+
+/*-----------------------------------*/
+
+.stream__wrapper{
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.stream__chat{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.stream__dialog{
+    height: 100%;
+}
+
+.stream__textarea{
+    height: 50px;
+}

@@ -28,7 +28,6 @@ router.get('/:name', async (req, res) => {
     context = {
         user: await User.findOne({"name": req.params.name})
     };
-    console.log(context);
 
     return res.render('streams/detail', context);
 })
