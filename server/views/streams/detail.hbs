@@ -1,21 +1,33 @@
 
-{{#if user.isStreaming}}
+{{#if user_streamer.isStreaming}}
 
 <div class="stream__wrapper">
-    <video width="900" id="my-player" class="video-js"
-        controls
-        preload="auto"
-        autoplay="true"
-        poster="/thumbnails/Offline.png"
-        data-setup='{}'>
-        <source src="http://192.168.0.247:8888/live/{{user.keygen_translation}}/index.mpd" type="application/dash+xml"></source>
-        <p class="vjs-no-js">Stream is not available</p>
-    </video>
-    <div class="stream__chat">
-        <ul class="stream__dialog">
-            {{!-- <li class="stream__message"></li> --}}
-        </ul>
-        <textarea class="stream__textarea" name="text" id="text" cols="30" rows="10"style="resize: none;"></textarea>
+    <div class="stream__block">
+        <div class="stream__lobby"></div>
+        <div class="stream__video">
+            <video autoplay style="width: 100%; height: auto;" id="my-player" class="video-js"
+                controls
+                preload="auto"
+                autoplay="true"
+                poster="/thumbnails/Offline.png"
+                data-setup='{"fluid": true}'>
+                <source src="http://192.168.0.247:8888/live/{{user_streamer.keygen_translation}}/index.mpd" type="application/dash+xml"></source>
+                <p class="vjs-no-js">Stream is not available</p>
+            </video>
+        </div>
+        <div class="stream__chat">
+            <div class="stream__dialog-block">
+                <ul class="stream__dialog">
+                    {{#each messages}}
+                        <li class="stream__message"><p>{{user}}: {{message}}</p></li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="stream__inputs">
+                <textarea {{#if isUserAuth}} {{/if}} class="stream__textarea" name="text" id="text" cols="30" rows="10"style="resize: none;"></textarea>
+                <button class="stream__enter">Отправить</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -24,7 +36,34 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
-        socket.emit('conn', 'good')
+
+        let enter = document.querySelector('.stream__enter');
+        let txt = document.querySelector('.stream__textarea');
+        let dialog = document.querySelector('.stream__dialog');
+        console.log(dialog.scrollHeight)
+        dialog.scrollTop = dialog.scrollHeight;
+        console.log(socket);
+        enter.addEventListener('click', function(){
+            socket.emit('message', {"message": txt.value, "streamer": document.location.pathname.split('/').pop()})
+        })
+        txt.addEventListener('keypress', function(e){
+            if(e.key === 'Enter'){
+                e.preventDefault();
+                socket.emit('message', {"message": txt.value, "streamer": document.location.pathname.split('/').pop()})
+                txt.value = "";
+            }
+        });
+
+        socket.on('user', function(data){
+            let message = document.createElement('li');
+            message.innerHTML = "<p>"+data.user+": "+data.message+"</p>";
+            message.className = "stream__message";
+            dialog.appendChild(message);
+            dialog.scrollTop = dialog.scrollHeight;
+        })
+        socket.on('connect', function(){
+            socket.emit('join-room', {"streamer": document.location.pathname.split('/').pop()})
+        })
     </script>
 
 {{/if}}

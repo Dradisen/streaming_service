@@ -2,6 +2,7 @@ let router = require('express').Router();
 let passport = require('../auth/auth');
 let axios = require('axios');
 let User = require('../database/Schema').User;
+let Streams = require('../database/Schema').Streams;
 
 router.get('/', async (req, res) => {
     let context = {};
@@ -25,10 +26,15 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:name', async (req, res) => {
+    let isUserAuth = req.user ? false : true;
+    let user_streamer = await User.findOne({"name": req.params.name});
+    let stream = await Streams.findOne({"_id_user": user_streamer._id, "status_stream": true});
     context = {
-        user: await User.findOne({"name": req.params.name})
+        user_streamer: user_streamer,
+        messages: stream.messages,
+        isUserAuth: isUserAuth,
+        user: req.user
     };
-
     return res.render('streams/detail', context);
 })
 

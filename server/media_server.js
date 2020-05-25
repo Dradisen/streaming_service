@@ -23,7 +23,8 @@ nms.on('prePublish', (id, StreamPath, args) => {
             User.findOne({"keygen_translation": id_key}, (err, res) => {
                 let stream = new Streams({
                     "_id_user": res._id,
-                    "messages": [{"name": "GGGG"}]
+                    "messages": [],
+                    "status_stream": true
                 })          
                 stream.save()
             })
@@ -56,12 +57,15 @@ nms.on('donePublish', (id, StreamPath, args) => {
     console.log('donePlay');
     let key = StreamPath.split('/');
     let id_key = key[key.length - 1];
+    
     User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": false}}, function(err, up){
         console.log(err, up);
     });
 
     User.findOne({"keygen_translation": id_key}, function(err, user){ 
-        console.log(user);
+        Streams.updateOne({"_id_user": user._id, "status_stream": true}, {"status_stream": false}, function(){
+            
+        });
     })
 
     clearInterval(thumbnails_interval);

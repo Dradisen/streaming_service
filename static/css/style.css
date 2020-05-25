@@ -200,22 +200,85 @@ html, body, #app{
 /*-----------------------------------*/
 
 .stream__wrapper{
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 50px 0 0 0;
+    background: #eee;
+}
+
+.stream__block{
+    width: 100%;
+    height: 100%;
     display: flex;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+}
+
+.stream__lobby{
+    width: 300px;
+    background: white;
+}
+
+.stream__video{
+    flex-grow: 1;
+    align-self: center;
 }
 
 .stream__chat{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    width: 300px;
+    background: white;
 }
 
 .stream__dialog{
     height: 100%;
+    list-style: none;
+    word-break: break-word;
+    overflow: scroll;
+}
+
+.stream__message{
+    margin: 5px 1px;
+}
+
+.stream__dialog-block{
+    height: 100%;
+    background: white;
+    margin: 10px;
+    overflow: hidden;
 }
 
 .stream__textarea{
     height: 50px;
+    width: 100%;
 }
+
+.stream__enter{
+    background: rgb(123, 221, 111);
+    border: 0;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.stream__lobby{
+    width: 300px;
+}
+
+::-webkit-scrollbar { width: 3px; height: 3px;}
+::-webkit-scrollbar-button {  background-color: white; }
+::-webkit-scrollbar-track {  background-color: white;}
+::-webkit-scrollbar-track-piece { background-color: white;}
+::-webkit-scrollbar-thumb { height: 50px; background-color: #666; border-radius: 3px;}
+::-webkit-scrollbar-corner { background-color: white;}
+::-webkit-resizer { background-color: white;}
+
+::-moz-webkit-scrollbar { width: 3px; height: 3px;}
+::-moz-webkit-scrollbar-button {  background-color: white; }
+::-moz-webkit-scrollbar-track {  background-color: white;}
+::-moz-webkit-scrollbar-track-piece { background-color: white;}
+::-moz-webkit-scrollbar-thumb { height: 50px; background-color: #666; border-radius: 3px;}
+::-moz-webkit-scrollbar-corner { background-color: white;}
+::-moz-webkit-resizer { background-color: white;}

@@ -7,6 +7,7 @@ let passport = require('./auth/auth');
 let mongoose = require('mongoose');
 let bodyParser = require('body-parser');
 let session = require('express-session');
+let MongoStore = require('connect-mongo')(session);
 let axios = require('axios');
 let config = require('./config/default');
 let socketio = require('socket.io');
@@ -35,21 +36,39 @@ hbsSetting._renderTemplate = function(template, context, options){
     return template(context, options);
 }
 
-console.log(path.dirname(__dirname) + "/node_modules");
 app.engine('hbs', hbsSetting.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, './views'));
 app.use('/scripts', express.static('node_modules'))
 app.use(express.static('static'));
-app.use(session({
+let sessionMiddle = session({
     secret: 'secret',
     resave: false,
     saveUninitialized: true,
-}))
+    store: new MongoStore({
+        url: 'mongodb://localhost/sessions',
+        autoRemove: 'enabled'
+    })
+})
+
+//промежуточная обработка сокета req и res
+io.use(function(socket, next){
+    sessionMiddle(socket.request, socket.request.res, next)
+})
+app.use(sessionMiddle);
+//----------------------------------------
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(passport.initialize());
-app.use(passport.session());
+let sessionPassportInit = passport.initialize();
+let sessionPassport = passport.session();
+io.use(function(socket, next){
+    sessionPassportInit(socket.request, socket.request.res, next)
+})
+io.use(function(socket, next){
+    sessionPassport(socket.request, socket.request.res, next);
+});
+app.use(sessionPassportInit);
+app.use(sessionPassport);
 
 
 app.use('/auth', require('./routers/router_auth'));
@@ -60,7 +79,6 @@ app.get('/', async (req ,res) => {
     context = {
         user: req.user
     }
-    //console.log(req.session);
     res.render('index', context);
 })
 
@@ -71,10 +89,24 @@ server.listen(config.port, () => {
 })
 
 
+let Streams = require('./database/Schema').Streams;
+let User = require('./database/Schema').User;
+
 io.on('connection', function(socket){
-    console.log("connection");
-    socket.on('conn', function(data){
-        console.log(data);
+    socket.on('join-room', function(data){
+        socket.join(data.streamer);
+        console.log("join", data);
+    });
+
+    socket.on('message', async function(data){
+        if(socket.request.user.name){
+            io.sockets.to(data.streamer).emit('user', {user: socket.request.user.name, message: data.message});
+            let user = await User.findOne({"name": data.streamer});
+            await Streams.updateOne({
+                "_id_user": user._id,
+                "status_stream": true
+            },{ $push:{"messages": {user: socket.request.user.name, "message": data.message}}})
+        };
     })
 })
 

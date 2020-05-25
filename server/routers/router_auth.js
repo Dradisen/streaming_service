@@ -15,10 +15,9 @@ router.route('/login')
     .get((req, res) => {
         res.render('auth/login');
     })
-    .post(passport.authenticate('LocalLogin', {
-        successRedirect: '/',
-        failureRedirect: '/auth/login'
-    }))
+    .post(passport.authenticate('LocalLogin', {failureRedirect: '/auth/login'}), function(req, res){
+        res.redirect('/');
+    })
 
 router.get('/logout', isAuth, (req, res) => {
     req.logOut();
