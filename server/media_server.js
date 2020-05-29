@@ -1,9 +1,9 @@
 let NodeMediaServer = require('node-media-server');
-let mongoose = require('mongoose');
 let fs = require('fs');
+let path = require('path');
 let spawn = require('child_process').spawn;
-let ffmpeg = require('./config/default').rtmp_server.trans.ffmpeg;
-let config = require('./config/default').rtmp_server;
+let ffmpeg = require('./config/server').rtmp_server.trans.ffmpeg;
+let config = require('./config/server').rtmp_server;
 let User = require('./database/Schema').User;
 let Streams = require('./database/Schema').Streams;
 
@@ -34,14 +34,13 @@ nms.on('prePublish', (id, StreamPath, args) => {
             });
             
             thumbnails_interval = setInterval(function(){
-                fs.access('./static/thumbnails/'+user.name, (err) => {
+                fs.access(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
                     if(err){
-                        fs.mkdir('./static/thumbnails/'+user.name, (err) => {
+                        fs.mkdir(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
                             create_thumbnails(id_key, user.name);
                         })
-                    }else{
-                        create_thumbnails(id_key, user.name);
                     }
+                    create_thumbnails(id_key, user.name);
                 })
             }, 10000);
         }else{
@@ -54,7 +53,7 @@ nms.on('prePublish', (id, StreamPath, args) => {
   });
 
 nms.on('donePublish', (id, StreamPath, args) => {
-    console.log('donePlay');
+
     let key = StreamPath.split('/');
     let id_key = key[key.length - 1];
     
@@ -78,8 +77,7 @@ function create_thumbnails(id_key, name){
         '-ss', '00:00:01',
         '-vframes', '1',
         '-vf', 'scale=-2:300',
-        'static/thumbnails/'+name+'/'+name+'.png',
+        path.join(path.dirname(__dirname), '/media/thumbnails/'+name+'/live.png'),
     ])
-    return;
 }
 module.exports = nms;

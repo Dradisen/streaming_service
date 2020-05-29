@@ -8,7 +8,7 @@
                     {{#if isStreaming}}
                         <p class="streams__name">{{name}}</p>
                         <a class="streams__link" href="/streams/{{name}}">
-                            <img class="streams__img" src="/thumbnails/{{name}}/{{name}}.png" alt="" width="400">
+                            <img class="streams__img" src="/media/thumbnails/{{name}}/live.png" alt="" width="400">
                         </a>
                         <p class="streams__live">live</p>
                     {{/if}}
@@ -19,4 +19,3 @@
         {{/if}}
     </div>
 </div>
-{{> socket }}

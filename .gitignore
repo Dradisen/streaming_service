@@ -1,6 +1,2 @@
 node_modules
-server/media
-static/*
-!static/css
-!/static/preview-video
-static/css/video-js.min.css
+media

@@ -11,7 +11,7 @@
                 autoplay="true"
                 poster="/thumbnails/Offline.png"
                 data-setup='{"fluid": true}'>
-                <source src="http://192.168.0.247:8888/live/{{user_streamer.keygen_translation}}/index.mpd" type="application/dash+xml"></source>
+                <source src="http://192.168.0.247:8888/live/{{user_streamer.keygen_translation}}/index.m3u8" type="application/x-mpegURL"></source>
                 <p class="vjs-no-js">Stream is not available</p>
             </video>
         </div>
@@ -31,39 +31,9 @@
     </div>
 </div>
 
-    <script src="/video/dist/video.js"></script>
+    <script src="/scripts/video.js/dist/video.js"></script>
     <script>videojs.options.flash.swf = "video-js.swf";</script>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-
-        let enter = document.querySelector('.stream__enter');
-        let txt = document.querySelector('.stream__textarea');
-        let dialog = document.querySelector('.stream__dialog');
-        console.log(dialog.scrollHeight)
-        dialog.scrollTop = dialog.scrollHeight;
-        console.log(socket);
-        enter.addEventListener('click', function(){
-            socket.emit('message', {"message": txt.value, "streamer": document.location.pathname.split('/').pop()})
-        })
-        txt.addEventListener('keypress', function(e){
-            if(e.key === 'Enter'){
-                e.preventDefault();
-                socket.emit('message', {"message": txt.value, "streamer": document.location.pathname.split('/').pop()})
-                txt.value = "";
-            }
-        });
-
-        socket.on('user', function(data){
-            let message = document.createElement('li');
-            message.innerHTML = "<p>"+data.user+": "+data.message+"</p>";
-            message.className = "stream__message";
-            dialog.appendChild(message);
-            dialog.scrollTop = dialog.scrollHeight;
-        })
-        socket.on('connect', function(){
-            socket.emit('join-room', {"streamer": document.location.pathname.split('/').pop()})
-        })
-    </script>
+    <script src="/js/streams_detail_socket.js"></script>
 
 {{/if}}

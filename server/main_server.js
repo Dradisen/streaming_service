@@ -8,8 +8,7 @@ let mongoose = require('mongoose');
 let bodyParser = require('body-parser');
 let session = require('express-session');
 let MongoStore = require('connect-mongo')(session);
-let axios = require('axios');
-let config = require('./config/default');
+let config = require('./config/server');
 let socketio = require('socket.io');
 
 mongoose.connect('mongodb://127.0.0.1/stream', {useNewUrlParser: true});
@@ -40,6 +39,7 @@ app.engine('hbs', hbsSetting.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, './views'));
 app.use('/scripts', express.static('node_modules'))
+app.use('/media', express.static('media'))
 app.use(express.static('static'));
 let sessionMiddle = session({
     secret: 'secret',
