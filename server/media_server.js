@@ -52,7 +52,7 @@ nms.on('prePublish', (id, StreamPath, args) => {
     
   });
 
-nms.on('donePublish', (id, StreamPath, args) => {
+nms.on('donePublish', async (id, StreamPath, args) => {
 
     let key = StreamPath.split('/');
     let id_key = key[key.length - 1];

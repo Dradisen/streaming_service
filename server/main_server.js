@@ -39,7 +39,7 @@ app.engine('hbs', hbsSetting.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, './views'));
 app.use('/scripts', express.static('node_modules'))
-app.use('/media', express.static('media'))
+//app.use('/media', express.static('media'))
 app.use(express.static('static'));
 let sessionMiddle = session({
     secret: 'secret',
@@ -74,6 +74,7 @@ app.use(sessionPassport);
 app.use('/auth', require('./routers/router_auth'));
 app.use('/streams', require('./routers/router_streams'));
 app.use('/setting', require('./routers/router_setting'));
+app.use('/media', require('./routers/router_media'));
 
 app.get('/', async (req ,res) => {
     context = {
