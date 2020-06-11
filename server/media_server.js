@@ -10,62 +10,53 @@ let Streams = require('./database/Schema').Streams;
 let nms = new NodeMediaServer(config);
 var thumbnails_interval;
 
-nms.on('prePublish', (id, StreamPath, args) => {
+nms.on('prePublish', async function(id, StreamPath, args) {
     console.log('[NodeEvent on prePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
     let key = StreamPath.split('/');
     let id_key = key[key.length - 1];
     
-    User.findOne({"keygen_translation": id_key}, function(err, user){ 
-        if(err){
-            console.log(err);
-        }else if(user){
+    let err, user = await User.findOne({"keygen_translation": id_key});
 
-            User.findOne({"keygen_translation": id_key}, (err, res) => {
-                let stream = new Streams({
-                    "_id_user": res._id,
-                    "messages": [],
-                    "status_stream": true
-                })          
-                stream.save()
+    if(err){ 
+        console.log(err);
+    }else if(user){
+
+        let err, usr = await User.findOne({"keygen_translation": id_key});
+        let stream = new Streams({
+            "_id_user": usr._id,
+            "messages": [],
+            "status_stream": true
+        })          
+        stream.save()
+        err, update = await User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": true}});
+        
+
+        thumbnails_interval = setInterval(function(){
+            fs.access(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
+                if(err){
+                    fs.mkdir(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
+                        create_thumbnails(id_key, user.name);
+                    })
+                }
+                create_thumbnails(id_key, user.name);
             })
+        }, 10000);
+    }else{
+        console.log('user not find');
+        let session = nms.getSession(id);
+        session.reject();
+    }
+});
 
-            User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": true}}, function(err, up){
-    
-            });
-            
-            thumbnails_interval = setInterval(function(){
-                fs.access(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
-                    if(err){
-                        fs.mkdir(path.join(path.dirname(__dirname), '/media/thumbnails/'+user.name), (err) => {
-                            create_thumbnails(id_key, user.name);
-                        })
-                    }
-                    create_thumbnails(id_key, user.name);
-                })
-            }, 10000);
-        }else{
-            console.log('user not find');
-            let session = nms.getSession(id);
-            session.reject();
-        }
-    })
-    
-  });
-
-nms.on('donePublish', async (id, StreamPath, args) => {
-
+nms.on('donePublish', async function(id, StreamPath, args){
     let key = StreamPath.split('/');
     let id_key = key[key.length - 1];
-    
-    User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": false}}, function(err, up){
-        console.log(err, up);
-    });
+    let err, user, update;
+    await User.updateOne({"keygen_translation": id_key}, {$set: {"isStreaming": false}});
 
-    User.findOne({"keygen_translation": id_key}, function(err, user){ 
-        Streams.updateOne({"_id_user": user._id, "status_stream": true}, {"status_stream": false}, function(){
-            
-        });
-    })
+    err, user = await User.findOne({"keygen_translation": id_key});
+    err, update = await Streams.updateOne({"_id_user": user._id, "status_stream": true}, {"status_stream": false});
+    console.log(err, update);
 
     clearInterval(thumbnails_interval);
 })

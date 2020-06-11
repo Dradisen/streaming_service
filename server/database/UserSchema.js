@@ -1,4 +1,3 @@
-let mongoose = require('mongoose');
 let Schema = require('mongoose').Schema;
 let md5 = require('js-md5');
 let shortId = require('shortid');

@@ -1,5 +1,5 @@
 let router = require('express').Router();
-let passport = require('../auth/auth');
+let passport = require('../auth/auth').passport;
 let isAuth = require('../auth/auth').isAuth;
 
 router.route('/register')

@@ -2,50 +2,32 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
 let User = require('../database/Schema').User;
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
-      done(err, user);
-    });
-  });
-
-passport.use('LocalRegister', new LocalStrategy(function(username, password, done){
-    
-    User.findOne({name: username}, function(err, user){
-        if(err) { 
-            console.log(err);
-            return done(err); 
-        }
+passport.use('LocalRegister', new LocalStrategy(async function(username, password, done){
+    try{
+        let err, user = await User.findOne({name: username});
+        if(err) { console.log(err); return done(err); }
         if(user){ 
             return done(null, false); 
         }else{
-            let us = new User();
-            us.name = username;
-            us.password = us.cryptPassword(password);
-            us.keygen_translation = us.generateKey();
-
-            us.save((err) => {
-                if(err){
-                    throw err;
-                }
-                return done(null, us);
-            })
+            let user = new User();
+            user.name = username;
+            user.password = user.cryptPassword(password);
+            user.keygen_translation = user.generateKey();
+            
+            let err, usr = await user.save();
+            if(err) throw err;
+            return done(null, usr);
         }
-    })
+    }catch(err){ console.log(err) }
 }))
 
-passport.use('LocalLogin', new LocalStrategy({
-    usernameField: 'username',
-    passwordField: 'password'
-}, function(username, password, done){
-    User.findOne({name: username}, function(err ,user){
-        if(err) { 
-            console.log(err);
-            return done(err); 
-        }
+passport.use('LocalLogin', new LocalStrategy({ 
+        usernameField: 'username',
+        passwordField: 'password'
+    }, async function(username, password, done){
+        let err, user = await User.findOne({name: username});
+
+        if(err) { console.log(err); done(err); }
         if(!user) { return done(null, false); }
         if(user){
             if(user.password === user.validPassword(password)){
@@ -54,14 +36,24 @@ passport.use('LocalLogin', new LocalStrategy({
                 return done(null, false);
             }
         }
-    })
-}))
-
-module.exports = passport;
-module.exports.isAuth = function(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
     }
-    return res.redirect('/');
+))
 
+passport.serializeUser(function(user, done) {
+    return done(null, user.id);
+  });
+  
+passport.deserializeUser(async function(id, done) {
+    let err, user = await User.findById(id);
+    return done(err, user);
+});
+
+let isAuth = function(req, res, next){
+    if(req.isAuthenticated()) { return next(); }
+    return res.redirect('/');
+}
+
+module.exports = {
+    passport: passport,
+    isAuth: isAuth
 }
