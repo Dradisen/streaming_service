@@ -1,5 +1,8 @@
-const servers = {
+module.exports = {
     port: 3000,
+    debug: true,
+    host: 'localhost',
+    domain: '',
     rtmp_server: {
         rtmp: {
             port: 1935,
@@ -25,5 +28,3 @@ const servers = {
         }
     },
 };
-
-module.exports = servers;

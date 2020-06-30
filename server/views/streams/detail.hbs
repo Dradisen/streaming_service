@@ -11,7 +11,7 @@
                 autoplay="true"
                 poster="/thumbnails/Offline.png"
                 data-setup='{"fluid": true}'>
-                <source src="http://192.168.0.247:8888/live/{{user_streamer.keygen_translation}}/index.m3u8" type="application/x-mpegURL"></source>
+                <source src="//{{host}}:{{port}}/live/{{user_streamer.keygen_translation}}/index.m3u8" type="application/x-mpegURL"></source>
                 <p class="vjs-no-js">Stream is not available</p>
             </video>
         </div>
@@ -24,7 +24,7 @@
                 </ul>
             </div>
             <div class="stream__inputs">
-                <textarea {{#if isUserAuth}} {{/if}} class="stream__textarea" name="text" id="text" cols="30" rows="10"style="resize: none;"></textarea>
+                <textarea {{#if isUserAuth}} disabled {{/if}} class="stream__textarea" name="text" id="text" cols="30" rows="10"style="resize: none;"></textarea>
                 <button class="stream__enter">Отправить</button>
             </div>
         </div>

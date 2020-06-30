@@ -7,6 +7,7 @@ module.exports = function(server){
     console.log("SOCKET SERVER START");
     
     io.on('connection', function(socket){
+        //console.log("ip is: ",socket.handshake);
         socket.on('join-room', function(data){
             socket.join(data.streamer);
             console.log("join", data);

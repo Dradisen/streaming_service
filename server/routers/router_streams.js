@@ -3,6 +3,7 @@ let passport = require('../auth/auth');
 let axios = require('axios');
 let User = require('../database/Schema').User;
 let Streams = require('../database/Schema').Streams;
+let config = require('../config/server')
 
 router.get('/', async (req, res) => {
     let context = {};
@@ -30,6 +31,8 @@ router.get('/:name', async (req, res) => {
     let user_streamer = await User.findOne({"name": req.params.name});
     let stream = await Streams.findOne({"_id_user": user_streamer._id, "status_stream": true});
     context = {
+        host: config.host,
+        port: config.rtmp_server.http.port,
         user_streamer: user_streamer,
         messages: stream.messages,
         isUserAuth: isUserAuth,
