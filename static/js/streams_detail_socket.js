@@ -3,6 +3,7 @@ var socket = io();
 let enter = document.querySelector('.stream__enter');
 let txt = document.querySelector('.stream__textarea');
 let dialog = document.querySelector('.stream__dialog');
+let viewers = document.querySelector('.stream__viewers_count');
 
 dialog.scrollTop = dialog.scrollHeight;
 
@@ -28,4 +29,8 @@ socket.on('user', function(data){
 
 socket.on('connect', function(){
     socket.emit('join-room', {"streamer": document.location.pathname.split('/').pop()})
+})
+
+socket.on('count_users', function(count){
+    viewers.innerHTML = count;
 })

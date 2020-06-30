@@ -267,6 +267,12 @@ html, body, #app{
     width: 300px;
 }
 
+.stream__viewers{
+    display: flex;
+    margin: 10px;
+    justify-content: flex-end;
+}
+
 ::-webkit-scrollbar { width: 3px; height: 3px;}
 ::-webkit-scrollbar-button {  background-color: white; }
 ::-webkit-scrollbar-track {  background-color: white;}

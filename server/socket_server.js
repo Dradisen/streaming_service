@@ -7,13 +7,22 @@ module.exports = function(server){
     console.log("SOCKET SERVER START");
     
     io.on('connection', function(socket){
-        //console.log("ip is: ",socket.handshake);
         socket.on('join-room', function(data){
+            socket['streamer'] = data.streamer;
             socket.join(data.streamer);
-            console.log("join", data);
+            io.in(data.streamer).clients(function(err ,clients){
+                col_isers = new Set();
+                clients.forEach(element => {
+                    let ip = io.sockets.connected[element].handshake.headers['x-real-ip'] || 
+                             io.sockets.connected[element].handshake.address;
+                    col_isers.add(ip);
+                });
+                io.to(data.streamer).emit('count_users', col_isers.size)
+            });
         });
 
         socket.on('message', async function(data){
+            console.log(socket.request.user);
             if(socket.request.user.name){
                 io.sockets.to(data.streamer).emit('user', {user: socket.request.user.name, message: data.message});
                 let user = await User.findOne({"name": data.streamer});
@@ -22,6 +31,19 @@ module.exports = function(server){
                     "status_stream": true
                 },{ $push:{"messages": {user: socket.request.user.name, "message": data.message}}})
             };
+        })
+        
+        socket.on('disconnect', async function(reason){
+            if(socket['streamer'] !== undefined){
+                io.in(socket['streamer']).clients(function(err ,clients){
+                    col_isers = new Set();
+                    clients.forEach(element => {
+                        col_isers.add(io.sockets.connected[element].handshake.address)
+                    });
+                    io.to(socket['streamer']).emit('count_users', col_isers.size)
+                });
+            }
+            console.log("dissconnect ", socket['streamer'], socket.handshake.headers['x-real-ip'] || socket.handshake.address);
         })
     })
     
